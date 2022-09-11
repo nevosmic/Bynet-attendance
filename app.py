@@ -34,9 +34,7 @@ def init_db():
     mysql.connection.commit()
     #mysql.connection.close()  
 
-"""
-    
-"""
+
 @app.route('/')
 def index():
     return 'Hello world!!'
