@@ -67,7 +67,8 @@ def upload_files():
 def init():
     init_db()
     create_example_students_csv('/home/nevosmic/Flask-Proj/Bynet-attendance/static/files/example.csv')
-
+    read_from_csv('/home/nevosmic/Flask-Proj/Bynet-attendance/static/files/example.csv', mysql)
+    
 @app.route('/')
 def index():
     return 'Hello world!!'

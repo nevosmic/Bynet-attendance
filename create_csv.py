@@ -15,3 +15,23 @@ def create_example_students_csv(path_to_csv):
         # write multiple rows
         writer.writerows(data)
 
+def read_from_csv(path_to_csv, mysql):
+    csvfile = open(path_to_csv, newline='')
+    # make a new variable - c - for Python's DictReader object
+    c = csv.DictReader(csvfile)
+    # read from DictReader object
+    # using the column headings from the CSV as the dict keys
+    #for row in c:
+    #    print(row['name'] + row['total time'] + row['total percentage'] + row['number of meetings'])
+
+    for row in c:
+        sql = " INSERT INTO `flaskdb`.`Attendance`(`name`, `total time`, `total percentage`, `num of meetings`) VALUES (%s, %s, %s, %s)"
+        values = (row['name'], row['total time'], row['total percentage'], row['number of meetings'])
+        print(row['name'] +"\t"+ row['total time'] +"\t"+ row['total percentage'] +"\t"+ row['number of meetings'])
+        mysql.connection.cursor().execute(sql, values)
+        mysql.connection.commit()
+
+    # save and close the file
+    csvfile.close()
+
+    
