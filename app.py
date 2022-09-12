@@ -8,15 +8,7 @@ from create_csv import *
 
 app = Flask(__name__)
 
-#app.config['MYSQL_HOST'] = '192.168.56.102'
-#app.config['MYSQL_PORT'] = 22
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'michalflask'
-app.config['MYSQL_PASSWORD'] = '28111992'
-app.config['MYSQL_DB'] = 'flaskdb'
-
-
+app.config.from_object('config')
 
 mysql = MySQL(app)
 def init_db():
