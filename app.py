@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, request, redirect, url_for
 from flask_mysqldb import MySQL
-from create_csv import *
+from csv_handler import *
 
 
 
@@ -19,13 +19,13 @@ def init_db():
     cursor.execute('''DROP TABLE IF EXISTS `flaskdb`.`Attendance`''')
     cursor.execute(''' CREATE TABLE `flaskdb`.`Attendance` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` TEXT NOT NULL,
-  `total time` TEXT NOT NULL,
-  `total percentage` TEXT NOT NULL,
-  `num of meetings` TEXT NOT NULL,
-  PRIMARY KEY (`id`)); ''')
-
-    cursor.execute(''' INSERT INTO `flaskdb`.`Attendance`(`name`, `total time`, `total percentage`, `num of meetings`) VALUES (%s,%s,%s,%s)''', ("Michal", "650", "100.0", "2"))
+  `emails` VARCHAR(200) NOT NULL,
+  `names` VARCHAR(200) NOT NULL,
+  `total time` VARCHAR(200) NOT NULL,
+  `average` VARCHAR(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `emails_UNIQUE` (`emails` ASC) VISIBLE); ''')
+    cursor.execute(''' INSERT INTO `flaskdb`.`Attendance`(`emails`, `names`, `total time`, `average`) VALUES (%s,%s,%s,%s)''', ("mimi@gamil.com", "Mimi", "650", "100 %"))
     mysql.connection.commit()
 
 
@@ -57,13 +57,19 @@ def upload_files():
 
 @app.before_first_request
 def init():
+    vm_path = '/home/nevosmic/Flask-Proj/Bynet-attendance/static/files/example.csv'
+    path = 'static/files/attendance.csv'
     init_db()
-    create_example_students_csv('/home/nevosmic/Flask-Proj/Bynet-attendance/static/files/example.csv')
-    read_from_csv('/home/nevosmic/Flask-Proj/Bynet-attendance/static/files/example.csv', mysql)
+    # create_example_students_csv(vm_path)
+    read_from_csv(path, mysql)
     
 @app.route('/')
-def index():
-    return 'Hello world!!'
-
+def show_students():
+    # get students from db:
+    cur = mysql.connection.cursor()
+    cur.execute('''SELECT * FROM `flaskdb`.`Attendance` ''')
+    students = cur.fetchall()
+    print(students)
+    return render_template('students.html', data=students)
 
 app.run(debug=True, host='0.0.0.0', port=5000)
